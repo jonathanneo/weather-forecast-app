@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import os 
 import joblib 
+from prediction import predict
 
 # create app 
 app = Flask(__name__)
@@ -25,9 +26,17 @@ connection_url = URL.create(
 
 engine = create_engine(connection_url)
 
+# page routes
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/forecast")
+def forecast():
+    return render_template("forecast.html")
+
+# API routes 
 
 @app.route("/api/temperature")
 def get_temperature():
@@ -40,6 +49,18 @@ def get_temperature():
         order by datetime desc limit 100
     """, engine)
     return {"temps": recent_temps.to_dict(orient="records")}
+
+
+@app.route("/api/predict/<pressure>/<humidity>/<city>", methods=["GET"])
+def do_predict(pressure, humidity, city):
+    user_input = {
+        "pressure": float(pressure), 
+        "humidity": float(humidity), 
+        "city_name": city
+    }
+    prediction = predict(user_input)
+
+    return {"prediction": prediction}
 
 if __name__ == "__main__":
     app.run(debug=True)
