@@ -1,5 +1,11 @@
 # user files 
 config.py
+credentials.py
+logs
+config.*.sh
+.package
+*.zip
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
