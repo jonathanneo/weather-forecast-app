@@ -11,11 +11,13 @@ The app is hosted on AWS using Elastic Beanstalk (ELB).
 images/                                     # contains images used for the README
 app/    
     |__ _config.template.sh                 # template for adding credentials and secrets 
+    |__ _config.template.bat                 # template for adding credentials and secrets 
     |__ app.py                              # contains the main flask app logic and endpoints 
     |__ prediction.py                       # contains the code used to perform the prediction
     |__ Procfile                            # tells Elastic Beanstalk how to run the app 
     |__ requirements.txt                    # python dependencies for app 
     |__ build.sh                            # shell script to build the zip file 
+    |__ build.bat                            # shell script to build the zip file 
 README.md                                   # all you need to know is in here 
 ```
 
@@ -61,10 +63,10 @@ export DB_DATABASE_NAME="secret_goes_here"
 <b>windows:</b> 
 
 ```
-set DB_USER="secret_goes_here"
-set DB_PASSWORD="secret_goes_here"
-set DB_SERVER_NAME="secret_goes_here"
-set DB_DATABASE_NAME="secret_goes_here"
+set DB_USER=secret_goes_here
+set DB_PASSWORD=secret_goes_here
+set DB_SERVER_NAME=secret_goes_here
+set DB_DATABASE_NAME=secret_goes_here
 ```
 
 To save time running each variable in the terminal, you may wish to create script files to store the declaration of each variable. 
@@ -72,7 +74,7 @@ To save time running each variable in the terminal, you may wish to create scrip
 - macOS: store the declaration of the variables in a `config.local.sh` file 
     - run using `. ./config.local.sh` 
 - windows: store the declaration of the variables in a `config.local.bat` file 
-    - run using `. ./config.local.bat` 
+    - run using `config.local.bat` 
 
 ### Run the application locally 
 
@@ -117,9 +119,16 @@ zip -g web-app.zip app.py prediction.py requirements.txt Procfile
 ```
 
 <b>windows</b>:
+
+Note for Windows-only - You will need to install 7z (7-zip) which is a command line tool used for zipping files. 
+
+1. Go to https://www.7-zip.org/ and download the version for your windows PC (usually 64-bit x64)
+2. Run the installer .exe file 
+3. Add the path `C:\Program Files\7-Zip` to your environment variables `path` 
+
 ```
-zip -r web-app.zip templates static
-zip -g web-app.zip app.py prediction.py requirements.txt Procfile
+7z a -tzip web-app.zip templates static
+7z a -tzip web-app.zip app.py prediction.py requirements.txt Procfile
 ```
 
 This will produce a `.zip` file which contains all the code and library packages required to run the app on AWS Lambda.  
@@ -135,7 +144,7 @@ You can just build the app by running either
 
 <b>windows</b>:
 ```
-. ./build.bat
+build.bat
 ```
 
 #### Deploy app
@@ -151,7 +160,7 @@ You can just build the app by running either
         - Select "Local file" > "Choose file" and select the `.zip` file you have built 
     5. Select "Configure more options" 
         1. Select "Software" > "Edit"
-            - Provide the environment properties based on your environment variables in [_config.template.sh](app/_config.template.sh).
+            - Provide the environment properties based on your environment variables in [_config.template.sh](app/_config.template.sh) or [_config.template.bat](app/_config.template.bat).
             - Select "Save" 
         2. Select "Capacity" > "Edit" 
             - Under "Instance types", ensure that only "t2.micro" is selected. 
